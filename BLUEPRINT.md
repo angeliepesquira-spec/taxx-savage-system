@@ -1,14 +1,15 @@
 # Taxx Savage System Blueprint
 
 **Status:** living document. Update the Change Log and the "Open Items" list every session.
-**Last updated:** 2026-10-16 (v0.2)
+**Last updated:** 2026-10-16 (v0.3)
 **Build target:** HighLevel AI Studio (with Cloud: database, auth, file storage). This document is the spec; nothing is built from here.
 
 ---
 
 ## 1. Overview
 Taxx Savage is a white-label tax software company. The system has a public website and three portals:
-1. **Public website**: packages page, signup, payment, contract, document upload.
+1. **Public website** (separate app, not the hub): marketing site and packages page. Each package's **Start Now** button links to the hub's signup page. Built later, outside this AI Studio project.
+   **Hub app** (this build): signup, payment, contract, document upload, and the three portals.
 2. **Client portal** (the "preparer" who signed up).
 3. **Admin portal**.
 4. **Review team portal**.
@@ -32,7 +33,7 @@ All pages must be **mobile optimized** (most clients sign up on phones).
 Reference: https://taxxsavage.com/tax-software-packages/ (3 tiers, "Start Now" button opens the signup form).
 
 ## 4. Client onboarding flow
-1. Packages page, then **Start Now** and the signup form.
+1. Public packages page (separate app) > **Start Now** link > hub signup page. The link carries the chosen package (for example `?package=collab`) so the hub preselects it.
 2. **Stripe payment** (card is saved on file for later per-return charges).
 3. **Contract signing** (embedded template, chosen by package; mobile friendly). Fields: company name, print name, authorized signature, date.
 4. **Document upload**: ID (license/passport/govt ID), W9, Social Security card, PTIN (IRS document), EFIN summary (IRS document), anticipated bank product returns, EIN (optional).
@@ -159,7 +160,10 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - [ ] Reports/payout logic (Ledger, Advances, Prep Fees, etc.)
 - [ ] Logo, final brand colors, font (placeholder for now)
 - [ ] Domain
+- [ ] Hub signup URL (for the Start Now links) and the exact link format for each package
+- [ ] Public website: separate app, to plan later
 
 ## 15. Change Log
+- v0.3 (2026-10-16): Decision: signup lives on the hub app. Public website and packages page are built separately in another app; Start Now links to the hub signup. Prompt 02 = hub signup page only.
 - v0.2 (2026-10-16): Added `prompts/01-foundation.md` (first HighLevel AI Studio build prompt). Prompts live in `prompts/`, one per build step.
 - v0.1 (2026-10-16): Initial blueprint from discovery conversation and screenshots (signup, client portal, return form, admin menu, review sheets).
