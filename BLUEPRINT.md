@@ -1,7 +1,7 @@
 # Taxx Savage System Blueprint
 
 **Status:** living document. Update the Change Log and the "Open Items" list every session.
-**Last updated:** 2026-10-16 (v0.1)
+**Last updated:** 2026-10-16 (v0.2)
 **Build target:** HighLevel AI Studio (with Cloud: database, auth, file storage). This document is the spec; nothing is built from here.
 
 ---
@@ -161,4 +161,5 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - [ ] Domain
 
 ## 15. Change Log
+- v0.2 (2026-10-16): Added `prompts/01-foundation.md` (first HighLevel AI Studio build prompt). Prompts live in `prompts/`, one per build step.
 - v0.1 (2026-10-16): Initial blueprint from discovery conversation and screenshots (signup, client portal, return form, admin menu, review sheets).
