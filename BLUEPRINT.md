@@ -1,7 +1,7 @@
 # Taxx Savage System Blueprint
 
 **Status:** living document. Update the Change Log and the "Open Items" list every session.
-**Last updated:** 2026-10-18 (v0.5)
+**Last updated:** 2026-10-18 (v0.6)
 **Build target:** HighLevel AI Studio (with Cloud: database, auth, file storage). This document is the spec; the app is built in AI Studio. The built app is in the private repo `angeliepesquira-spec/taxx-savage-2` (see section 16, As Built).
 
 ---
@@ -167,6 +167,7 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - [ ] Public website: separate app, to plan later
 
 ## 15. Change Log
+- v0.6 (2026-10-18): Prompt 02 implemented on branch `prompt-02-onboarding` of `taxx-savage-2` (section 17), including two security fixes and the payment-verification gap.
 - v0.5 (2026-10-18): Decisions: keep details-then-pay; SSN last 4 only. Added `prompts/02-onboarding.md` (paid-only returns, contract templates and signing, document uploads, questionnaire, approval gate, admin user management).
 - v0.4 (2026-10-18): Added section 16 (As Built) from review of `taxx-savage-2`. Listed differences from spec and what is still missing.
 - v0.3 (2026-10-16): Decision: signup lives on the hub app. Public website and packages page are built separately in another app; Start Now links to the hub signup. Prompt 02 = hub signup page only.
@@ -206,3 +207,20 @@ Stack: TanStack Start, TypeScript, React, Tailwind, Supabase (AI Studio Cloud), 
 
 **Security notes**
 - `.env` is committed (auto-generated public keys only; repo is private). Never add secret keys to it.
+
+## 17. Prompt 02 built in code (branch `prompt-02-onboarding`, repo `taxx-savage-2`)
+
+Built directly in the app repo on branch `prompt-02-onboarding` (commit `9a9071a`), NOT merged to `main` yet. Type-checks and builds; the SQL parses; **not run against a live database and not tested in a browser**.
+
+**What it adds:** paid-only admin returns list with payment id, preparer, email and date columns, Refunded status and an admin "Mark refunded"; onboarding gate (package payment, contract, documents, thank-you, questionnaire, review) for unapproved clients; admin Contract Templates, User Management with client detail (documents, signed contract, answers, PTIN, Approve / Request changes / Reject), Preparer Completeness, Questionnaire manager; onboarding events in `audit_log`.
+
+**Security fixes found in the earlier build (fixed on the branch):**
+- Clients could update their own `orders` and `returns` rows directly, so they could mark returns paid without paying. Those policies are dropped; payment is confirmed in a server function.
+- Clients could change their own `clients.status` (self-approve). A trigger now blocks clients from changing status, package, approval or onboarding fields.
+
+**Known limits / open items:**
+- Payment is still confirmed from the browser: the server records the payment provider's order id but does not verify it with the provider. Before launch, verify payments server-side (webhook or API) or an attacker could call the confirm function without paying.
+- Contract text is plain text (no HTML) to avoid script injection.
+- "Registered PTINs" menu still opens the existing preparer-PTIN page; client PTINs show in Preparer Completeness and on the client detail page.
+- Existing non-approved clients will be gated until an admin approves them.
+- The new migration must be applied to the database before the code runs, or pages will error.
