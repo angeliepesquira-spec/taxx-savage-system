@@ -1,8 +1,8 @@
 # Taxx Savage System Blueprint
 
 **Status:** living document. Update the Change Log and the "Open Items" list every session.
-**Last updated:** 2026-10-16 (v0.3)
-**Build target:** HighLevel AI Studio (with Cloud: database, auth, file storage). This document is the spec; nothing is built from here.
+**Last updated:** 2026-10-18 (v0.4)
+**Build target:** HighLevel AI Studio (with Cloud: database, auth, file storage). This document is the spec; the app is built in AI Studio. The built app is in the private repo `angeliepesquira-spec/taxx-savage-2` (see section 16, As Built).
 
 ---
 
@@ -160,10 +160,49 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - [ ] Reports/payout logic (Ledger, Advances, Prep Fees, etc.)
 - [ ] Logo, final brand colors, font (placeholder for now)
 - [ ] Domain
+- [ ] Test pay-then-record: do failed or cancelled payments stay out of admin and review lists?
+- [ ] Decide: pay first then details (spec) vs details then pay (as built)
+- [ ] Decide: keep SSN last 4 only (proposed) or collect full SSN
+- [ ] Confirm AI Studio Payments can charge a saved card per return
 - [ ] Hub signup URL (for the Start Now links) and the exact link format for each package
 - [ ] Public website: separate app, to plan later
 
 ## 15. Change Log
+- v0.4 (2026-10-18): Added section 16 (As Built) from review of `taxx-savage-2`. Listed differences from spec and what is still missing.
 - v0.3 (2026-10-16): Decision: signup lives on the hub app. Public website and packages page are built separately in another app; Start Now links to the hub signup. Prompt 02 = hub signup page only.
 - v0.2 (2026-10-16): Added `prompts/01-foundation.md` (first HighLevel AI Studio build prompt). Prompts live in `prompts/`, one per build step.
 - v0.1 (2026-10-16): Initial blueprint from discovery conversation and screenshots (signup, client portal, return form, admin menu, review sheets).
+
+## 16. As Built (repo `angeliepesquira-spec/taxx-savage-2`, reviewed 2026-10-18, code read only, not run)
+
+Stack: TanStack Start, TypeScript, React, Tailwind, Supabase (AI Studio Cloud), AI Studio Payments. 164 files, 18 migrations, last commit 2026-10-16.
+
+**Built**
+- Database: user_roles, profiles, packages (Collab 89, Pro 599), products (8 return types, prices not set in DB), clients, orders, returns, announcements, menu_items, audit_log, preparers. Row-level security on tables. Private storage bucket `client-files` with owner/admin policies.
+- PTIN: only admins can change it; every change goes to audit_log (trigger `guard_ptin`).
+- Roles and portals: `/admin`, `/client`, `/review`, with login, logout, reset-password and a no-access page.
+- Menu Manager (`/admin/menus`) and review team management (`/admin/review-team`).
+- Admin pages: index, menus, PTINs, returns, review-team, profile, coming-soon.
+- Client pages: index, amended-return, corporate-return, state-return, nonbank-return, extensions, add-preparer, checkout, returns, profile, coming-soon.
+- Review pages: index, paid-returns, reviewed, profile, coming-soon.
+- Public pages inside the app: home, packages, features, contact, signup.
+- Reviewer column on returns tables (reviewer name stamped on the return when marked reviewed).
+
+**Differences from this blueprint (decide and reconcile)**
+1. Payments use AI Studio's Payments catalog (products matched by name), not direct Stripe. Card-on-file per-return charging is not confirmed.
+2. Flow is submit return details first, then checkout. Blueprint says pay first, then enter details. Not verified whether unpaid or failed orders stay out of admin and review lists (must test).
+3. SSN: forms collect only SSN last 4 plus taxpayer first initial and last name. `ssn_encrypted` exists but is unused. Decision proposed: keep last 4 only (matches the review sheet; safer).
+4. A packages page exists inside the app although the public site is planned as a separate app.
+
+**Not built yet**
+- Contract signing and admin Contract Templates page
+- Document uploads (ID, W9, SSN card, PTIN, EFIN, bank product, EIN)
+- Experience questionnaire
+- Admin approval gate before portal access
+- Client Notifications (announcements UI), Client Messaging
+- Audit Protection, Refund Cards and Check Reset forms
+- Reports, Academy, ledger and payouts (phase 2)
+- Third package tier
+
+**Security notes**
+- `.env` is committed (auto-generated public keys only; repo is private). Never add secret keys to it.
