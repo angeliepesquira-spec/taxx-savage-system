@@ -1,7 +1,7 @@
 # Taxx Savage System Blueprint
 
 **Status:** living document. Update the Change Log and the "Open Items" list every session.
-**Last updated:** 2026-10-18 (v0.4)
+**Last updated:** 2026-10-18 (v0.5)
 **Build target:** HighLevel AI Studio (with Cloud: database, auth, file storage). This document is the spec; the app is built in AI Studio. The built app is in the private repo `angeliepesquira-spec/taxx-savage-2` (see section 16, As Built).
 
 ---
@@ -68,7 +68,7 @@ Flow for each:
 3. Client enters **number of returns**.
 4. Page shows **Your Cost Today** = count x product price.
 5. **Confirm Count** charges the card on file via Stripe.
-6. **If payment succeeds:** client enters details **for each return** (client name, SSN, files, other info; different for every return).
+6. **Decided (as built):** the client enters details **for each return** first (taxpayer first initial, last name, SSN last 4 only), then pays. A return becomes visible to admin and reviewers only after payment succeeds.
 7. **If payment fails or is cancelled:** nothing is recorded in the admin or review portals.
 8. Refunds are done by the admin inside Stripe; a refunded return is flagged.
 
@@ -136,8 +136,7 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - **Email/password reset:** through HighLevel Cloud auth (confirm email capability in AI Studio docs).
 
 ## 12. Security
-- SSN and ID documents encrypted at rest, private file storage, access limited to admin and reviewers.
-- SSN shown masked (last 4); reveal is logged.
+- Full SSN is never collected (last 4 only). ID and onboarding documents live in private storage; access limited to the client and admin (reviewers cannot see onboarding documents).
 - Consider IRS Pub 4557 / WISP requirements (confirm with the owner).
 
 ## 13. Build order
@@ -161,13 +160,14 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - [ ] Logo, final brand colors, font (placeholder for now)
 - [ ] Domain
 - [ ] Test pay-then-record: do failed or cancelled payments stay out of admin and review lists?
-- [ ] Decide: pay first then details (spec) vs details then pay (as built)
-- [ ] Decide: keep SSN last 4 only (proposed) or collect full SSN
+- [x] Decided 2026-10-18: keep as built (details first, then pay); unpaid returns must stay hidden from admin and review lists (Prompt 02 Part A)
+- [x] Decided 2026-10-18: SSN last 4 only; never collect the full SSN
 - [ ] Confirm AI Studio Payments can charge a saved card per return
 - [ ] Hub signup URL (for the Start Now links) and the exact link format for each package
 - [ ] Public website: separate app, to plan later
 
 ## 15. Change Log
+- v0.5 (2026-10-18): Decisions: keep details-then-pay; SSN last 4 only. Added `prompts/02-onboarding.md` (paid-only returns, contract templates and signing, document uploads, questionnaire, approval gate, admin user management).
 - v0.4 (2026-10-18): Added section 16 (As Built) from review of `taxx-savage-2`. Listed differences from spec and what is still missing.
 - v0.3 (2026-10-16): Decision: signup lives on the hub app. Public website and packages page are built separately in another app; Start Now links to the hub signup. Prompt 02 = hub signup page only.
 - v0.2 (2026-10-16): Added `prompts/01-foundation.md` (first HighLevel AI Studio build prompt). Prompts live in `prompts/`, one per build step.
