@@ -136,6 +136,7 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - **Email/password reset:** through HighLevel Cloud auth (confirm email capability in AI Studio docs).
 
 ## 12. Security
+- **Before launch, everything in `LAUNCH-CHECKLIST.md` must be checked.** It is the gate for real clients (payment verification, Stripe, test mode off, remove quick sign-in test accounts, admin 2-factor, security review, backups, scale).
 - Full SSN is never collected (last 4 only). ID and onboarding documents live in private storage; access limited to the client and admin (reviewers cannot see onboarding documents).
 - Consider IRS Pub 4557 / WISP requirements (confirm with the owner).
 
@@ -167,6 +168,7 @@ Phase 2 (from the existing review sheet "Reviews Team A"): Reviewed?, Reviewer i
 - [ ] Public website: separate app, to plan later
 
 ## 15. Change Log
+- v0.7 (2026-10-24): Added `LAUNCH-CHECKLIST.md` (the pre-launch gate). The product is still in the building stage; the checklist must be reviewed before real clients use it.
 - v0.6 (2026-10-18): Prompt 02 implemented on branch `prompt-02-onboarding` of `taxx-savage-2` (section 17), including two security fixes and the payment-verification gap.
 - v0.5 (2026-10-18): Decisions: keep details-then-pay; SSN last 4 only. Added `prompts/02-onboarding.md` (paid-only returns, contract templates and signing, document uploads, questionnaire, approval gate, admin user management).
 - v0.4 (2026-10-18): Added section 16 (As Built) from review of `taxx-savage-2`. Listed differences from spec and what is still missing.
